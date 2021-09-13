@@ -4,9 +4,16 @@
     border-radius: 25px 25px 0px 0px;
     padding-left: 25px;
     padding-right: 25px;
+    position: relative;
 }
+#header-content{
+    position: absolute;
+    bottom: 0;
+    color: white;
+}
+
 #game-window{
-    background-color: #800080;
+    background-color: #22303c;
     height: 80%;
     overflow: auto;
     border-radius: 0px 0px 25px 25px;
@@ -16,7 +23,7 @@
     align-items: center;
 }
 body{
-    background-color: #363636;
+    background-color: #15202b;
 }
 
 #game-container{
@@ -24,4 +31,18 @@ body{
     height: 60vh;
     width: 50vw;
     padding-top: 5%;
+}
+
+.contact-card{
+    position: fixed;
+    right: 2rem;
+    top: 2rem;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: rgb(29, 155, 240);
+    text-align: center;
+}
+
+.contact-card a {
+    text-decoration: none;
 }
