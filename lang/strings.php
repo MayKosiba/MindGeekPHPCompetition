@@ -1,3 +1,4 @@
 <?php
 
-$DIR['gameScreen'] = 'game';
+$DIR['screen'] = 'screen';
+$DIR['menu'] = 'menu';

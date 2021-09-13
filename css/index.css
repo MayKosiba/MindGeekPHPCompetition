@@ -1,0 +1,27 @@
+#game-header{
+    background-color: rgb(29, 155, 240);
+    height: 15%;
+    border-radius: 25px 25px 0px 0px;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+#game-window{
+    background-color: #800080;
+    height: 80%;
+    overflow: auto;
+    border-radius: 0px 0px 25px 25px;
+}
+#background{
+    display: flex;
+    align-items: center;
+}
+body{
+    background-color: #363636;
+}
+
+#game-container{
+    margin: auto;
+    height: 60vh;
+    width: 50vw;
+    padding-top: 5%;
+}

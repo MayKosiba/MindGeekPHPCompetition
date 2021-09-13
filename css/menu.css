@@ -1,0 +1,14 @@
+#menu-select{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#menu-select button{
+    margin: 5px;
+}
+
+.btn {
+    background-color: rgb(29, 155, 240);
+    border-color: rgb(29, 155, 240);
+}
