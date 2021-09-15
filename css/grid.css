@@ -1,0 +1,48 @@
+.play-area {
+    margin: auto;
+    padding: 1rem;
+    display: grid;
+    width: 300px;
+    height: 300px;
+    grid-template-columns: auto auto auto;
+}
+.block {
+    background: #446078;
+    display: flex;
+    width: 100px;
+    height: 100px;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    border: 3px solid black;
+    transition: background 0.2s ease-in-out;
+}
+
+.block:hover {
+    cursor: pointer;
+    background: rgb(29, 155, 240);
+}
+#block_0,
+#block_1,
+#block_2 {
+    border-top: none;
+}
+
+#block_0,
+#block_3,
+#block_6 {
+    border-left: none;
+}
+
+#block_6,
+#block_7,
+#block_8 {
+    border-bottom: none;
+}
+
+#block_2,
+#block_5,
+#block_8 {
+    border-right: none;
+}

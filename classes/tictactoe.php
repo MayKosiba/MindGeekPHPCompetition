@@ -70,16 +70,14 @@ class tictactoe
     /**
      * @return string
      */
-    public function getPlayersTurn(): string
-    {
+    public function getPlayersTurn(): string {
         return $this->playersTurn;
     }
 
     /**
      * @param int $playersTurn
      */
-    public function setPlayersTurn(int $playersTurn): void
-    {
+    public function setPlayersTurn(int $playersTurn): void {
         if($playersTurn == 0 || $playersTurn == 1) {
             $this->playersTurn = $playersTurn;
         } else {
@@ -90,24 +88,21 @@ class tictactoe
     /**
      * @return array
      */
-    public function getGameMatrix(): array
-    {
+    public function getGameMatrix(): array {
         return $this->gameMatrix;
     }
 
     /**
      * @return string
      */
-    public function getGameType(): string
-    {
+    public function getGameType(): string {
         return $this->gameType;
     }
 
     /**
      * @param string $gameType
      */
-    public function setGameType(string $gameType): void
-    {
+    public function setGameType(string $gameType): void {
         if($gameType == 'single' || $gameType == 'multi' || $gameType == 'online'){
             $this->gameType = $gameType;
         } else {
@@ -153,4 +148,8 @@ class tictactoe
         return false;
     }
 
+
+    public static function isValidType($gametype): bool {
+        return $gametype == 'single' || $gametype == 'multi' || $gametype == 'online';
+    }
 }
