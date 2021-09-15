@@ -16,3 +16,22 @@
         </div>
         {{/array}}
     </div>
+
+<!-- Modal -->
+<div class="modal fade" id="info-popup" tabindex="-1" aria-labelledby="info-popup-label" aria-hidden="true">
+    <div class="modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="info-popup-label">{{gameType}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{#cpuTurn}}CPU will go first{{/cpuTurn}}
+                {{^cpuTurn}}Player {{turn}} will go first{{/cpuTurn}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Start Game</button>
+            </div>
+        </div>
+    </div>
+</div>

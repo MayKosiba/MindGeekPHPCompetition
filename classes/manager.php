@@ -14,6 +14,9 @@ class manager {
         } else {
             throw new Exception('Invalid gametype');
         }
+        if($this->game->isCpuTurn()){
+            $this->game->cpuMoves();
+        }
      }
 
      public function renderGameScreen(): string {
@@ -21,16 +24,9 @@ class manager {
              $context = array();
              $matrix = $this->game->getGameMatrix();
              $turn = $this->game->getPlayersTurn();
-             if($turn == 'x'){
-                 $context['turn'] = 'X';
-                 $context['cpuTurn'] = false;
-             } elseif ($turn == 'o' && $this->game->getGameType() == 'single'){
-                 $context['cpuTurn'] = true;
-             } else {
-                 $context['turn'] = 'O';
-                 $context['cpuTurn'] = false;
-             }
-
+             $context['cpuTurn'] = $this->game->isCpuTurn();
+             $context['turn'] = strtoupper($this->game->getPlayersTurn());
+             $context['gameType'] = $this->game->getGameType();
              $i = 0;
              $context['array'] = array();
              foreach ($matrix as $tile){
@@ -62,6 +58,12 @@ class manager {
         if(!is_int($move) || ($move < 0 || $move > 8)){
             throw new Exception('input must be int between 0 and 8');
         }
-        return $this->game->playerMoves($move);
+        $ret = $this->game->playerMoves($move);
+        $this->game->checkWinner();
+         if($this->game->isCpuTurn()){
+            $this->game->cpuMoves();
+        }
+        $this->game->checkWinner();
+        return $ret;
      }
 }

@@ -31,14 +31,21 @@ class tictactoe
      */
     private int $nturns;
 
+    /**
+     * if current turn is CPU, only for singleplayer games
+     * @var bool $cpuTurn
+     */
+    private bool $cpuTurn;
+
+
     private array $winningPlays = array(
-        array(0,1,2),
-        array(3,4,5),
-        array(6,7,8),
         array(0,3,6),
-        array(1,4,7),
+        array(0,1,2),
         array(2,5,8),
+        array(3,4,5),
         array(0,4,8),
+        array(6,7,8),
+        array(1,4,7),
         array(2,4,6)
     );
     /**
@@ -65,6 +72,11 @@ class tictactoe
             $this->playersTurn = 'o';
         }
         $this->nturns = 0;
+        if($game == 'single' && $this->playersTurn == 'o'){
+            $this->cpuTurn = true;
+        } else {
+            $this->cpuTurn = false;
+        }
     }
 
     /**
@@ -100,6 +112,14 @@ class tictactoe
     }
 
     /**
+     * @return bool
+     */
+    public function isCpuTurn(): bool
+    {
+        return $this->cpuTurn;
+    }
+
+    /**
      * @param string $gameType
      */
     public function setGameType(string $gameType): void {
@@ -121,9 +141,6 @@ class tictactoe
         }
         $this->gameMatrix[$spot] = $this->playersTurn;
         $this->nextPlayer();
-        if($this->playersTurn == 'o' && $this->gameType == 'single'){
-            $this->cpuMoves();
-        }
         return true;
     }
 
@@ -132,20 +149,37 @@ class tictactoe
      */
     public function nextPlayer(){
         if($this->playersTurn == 'x'){
+            if($this->gameType == 'single'){
+                $this->cpuTurn = true;
+            }
             $this->playersTurn = 'o';
         } else {
+            if($this->gameType == 'single'){
+                $this->cpuTurn = false;
+            }
             $this->playersTurn = 'x';
         }
     }
 
-    private function cpuMoves(){
+    public function cpuMoves(): bool{
+        if(!$this->isCpuTurn()){
+            return false;
+        }
+        $spot = $this->getCPUMove();
+        $this->gameMatrix[$spot] = $this->playersTurn;
+        $this->nextPlayer();
+        return true;
+    }
+
+    public function getCPUMove(){
         foreach ($this->winningPlays as $play){
-            $spot = array_search(null, $play);
-            if($spot){
-                break;
+            foreach ($play as $square){
+                if(is_null($this->gameMatrix[$square])){
+                    return $square;
+                }
             }
         }
-        $this->playerMoves($spot);
+        return false;
     }
 
     public function checkWinner(){
