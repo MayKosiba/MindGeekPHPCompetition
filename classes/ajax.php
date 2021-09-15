@@ -1,14 +1,25 @@
 <?php
-
-require 'tictactoe.php';
 require 'manager.php';
+session_start();
+$functionCall = $_POST['functionCall'];
 
-$gametype = $_POST['gametype'];
-
-if(tictactoe::isValidType($gametype)) {
-    $_SESSION['gameManger'] = new manager($gametype);
+if(isset($_SESSION['gameManger'])){
+    $manager = unserialize($_SESSION['gameManger']);
 } else {
-    die('Invalid Game');
+    die('must start a new game first');
 }
 
-echo $_SESSION['gameManger']->loadGameScreen();
+if($functionCall == 'startGame') {
+    $manager = new manager($_POST['gametype']);
+    echo $manager->renderGameScreen();
+}
+
+if($functionCall == 'playerMoves'){
+    if($manager->playerMoves($_POST['spot'])){
+        echo $manager->renderGameScreen();
+    } else {
+        echo 'false';
+    }
+}
+
+$_SESSION['gameManger'] = serialize($manager);

@@ -14,7 +14,6 @@
 
 #game-window{
     background-color: #22303c;
-    height: 80%;
     overflow: auto;
     border-radius: 0px 0px 25px 25px;
 }

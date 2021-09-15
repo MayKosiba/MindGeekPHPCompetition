@@ -115,15 +115,16 @@ class tictactoe
      * $spot must be from 0-8 to assign a player to that spot
      * @param int $spot
      */
-    public function playerMoves(int $spot){
-        if(!($spot >= 0 && $spot <=8)){
-            throw new Exception('spot value must be between 0-8');
-        }
+    public function playerMoves(int $spot): bool{
         if($this->gameMatrix[$spot] != null){
-            throw new Exception('Spot already taken, try again');
+           return false;
         }
         $this->gameMatrix[$spot] = $this->playersTurn;
         $this->nextPlayer();
+        if($this->playersTurn == 'o' && $this->gameType == 'single'){
+            $this->cpuMoves();
+        }
+        return true;
     }
 
     /**
@@ -135,6 +136,16 @@ class tictactoe
         } else {
             $this->playersTurn = 'x';
         }
+    }
+
+    private function cpuMoves(){
+        foreach ($this->winningPlays as $play){
+            $spot = array_search(null, $play);
+            if($spot){
+                break;
+            }
+        }
+        $this->playerMoves($spot);
     }
 
     public function checkWinner(){

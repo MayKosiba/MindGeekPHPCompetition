@@ -4,7 +4,7 @@ window.onload = () => {
         $.ajax({url: "classes/ajax.php",
             type: "post",
             dataType: 'html',
-            data: {gametype: "single", functionCall: "loadSinglePlayer"},
+            data: {gametype: "single", functionCall: "startGame"},
             success: function(result){
                 $("#game-window").html(result);
             },
