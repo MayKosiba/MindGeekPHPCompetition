@@ -14,8 +14,21 @@ function attachEventListeners() {
             dataType: 'html',
             data: {spot: spot, functionCall: "playerMoves"},
             success: function(result){
-                if(result != 'false'){
-                    $("#game-window").html(result);
+                console.log(result);
+                if(result == 'game already has a winner'){
+                    return;
+                }
+                let player = document.getElementById('player-turn');
+                let tile = document.getElementById('block_' + spot);
+                let title = document.getElementById('player-title');
+                if(player.innerText == 'O'){
+                    tile.innerHTML = "<img src=\"../assets/circle.svg\">";
+                    player.innerText = 'X';
+                    title.innerText = "Player X moves";
+                } else {
+                    tile.innerHTML = "<img src=\"../assets/x.svg\">";
+                    player.innerText = 'O';
+                    title.innerText = "Player O moves";
                 }
             },
             error: function (request, status, error) {

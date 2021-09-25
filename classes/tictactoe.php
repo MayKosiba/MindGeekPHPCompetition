@@ -1,5 +1,7 @@
 <?php
 
+require '../vendor/mustache/mustache/src/Mustache/Autoloader.php';
+
 class tictactoe
 {
 
@@ -7,7 +9,17 @@ class tictactoe
      *  0-8 matrix representing the tic tac toe game
      * @var array $gameMatrix
      */
-    private array $gameMatrix;
+    private array $gameMatrix = array(
+            0 => null,
+            1 => null,
+            2 => null,
+            3 => null,
+            4 => null,
+            5 => null,
+            6 => null,
+            7 => null,
+            8 => null
+        );
 
     /**
      * Which players turn it currently is:
@@ -29,7 +41,7 @@ class tictactoe
      * number of turns that passed
      * @var int $nturns
      */
-    private int $nturns;
+    private int $nturns = 0;
 
     /**
      * if current turn is CPU, only for singleplayer games
@@ -37,6 +49,10 @@ class tictactoe
      */
     private bool $cpuTurn;
 
+    /**
+     * @var string|null $winner
+     */
+    private ?string $winner = null;
 
     private array $winningPlays = array(
         array(0,3,6),
@@ -49,33 +65,58 @@ class tictactoe
         array(2,4,6)
     );
     /**
-     * string $game must be 'single' or 'multi' for local player and 'online' for internet play
-     * @throws Exception
+     * @param String $game must be 'single' or 'multi' for local player and 'online' for internet play
+     * @throws Exception Invalid Game Type
      */
     function __construct(string $game){
-        $this->setGameType($game);
-        $this->gameMatrix = array(
-            0 => null,
-            1 => null,
-            2 => null,
-            3 => null,
-            4 => null,
-            5 => null,
-            6 => null,
-            7 => null,
-            8 => null
-        );
+        if($this->isValidType($game)) {
+            $this->gameType = $game;
+        } else {
+            throw new Exception('Invalid Game Type');
+        }
         $player = rand(0,1);
         if($player == 1){
             $this->playersTurn = 'x';
         } else {
             $this->playersTurn = 'o';
         }
-        $this->nturns = 0;
         if($game == 'single' && $this->playersTurn == 'o'){
             $this->cpuTurn = true;
         } else {
             $this->cpuTurn = false;
+        }
+    }
+
+    public function renderGameScreen(): string {
+        try {
+            $context = array();
+            $matrix = $this->gameMatrix;
+            $context['cpuTurn'] = $this->cpuTurn;
+            $context['turn'] = strtoupper($this->playersTurn);
+            $context['gameType'] = $this->gameType;
+            $i = 0;
+            $context['array'] = array();
+            foreach ($matrix as $tile){
+                $context['array'][]['spot'] = $i;
+                if($tile == 'x'){
+                    $context['array'][$i]['is_x'] = true;
+                    $context['array'][$i]['is_o'] = false;
+                } elseif ($tile == 'o'){
+                    $context['array'][$i]['is_o'] = true;
+                    $context['array'][$i]['is_x'] = false;
+                } else {
+                    $context['array'][$i]['is_x'] = false;
+                    $context['array'][$i]['is_o'] = false;
+                }
+                $i++;
+            }
+            Mustache_Autoloader::register();
+            $window = new Mustache_Engine(array(
+                'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/../templates')
+            ));
+            return $window->render('tiles',$context);
+        } catch (Exception $e){
+            return $e->getMessage();
         }
     }
 
@@ -84,17 +125,6 @@ class tictactoe
      */
     public function getPlayersTurn(): string {
         return $this->playersTurn;
-    }
-
-    /**
-     * @param int $playersTurn
-     */
-    public function setPlayersTurn(int $playersTurn): void {
-        if($playersTurn == 0 || $playersTurn == 1) {
-            $this->playersTurn = $playersTurn;
-        } else {
-            throw new Exception('Player value must be 0 or 1');
-        }
     }
 
     /**
@@ -119,35 +149,55 @@ class tictactoe
         return $this->cpuTurn;
     }
 
-    /**
-     * @param string $gameType
-     */
-    public function setGameType(string $gameType): void {
-        if($gameType == 'single' || $gameType == 'multi' || $gameType == 'online'){
-            $this->gameType = $gameType;
-        } else {
-            throw new Exception('Invalid gameType');
-        }
-    }
+
+
+
 
     /**
-     * make player move,
-     * $spot must be from 0-8 to assign a player to that spot
-     * @param int $spot
+     * make player move
+     * @param int $spot must be from 0-8 to assign a player to that spot
+     * @return false|int[]|mixed false if no win condition, array with 3 elements for win condition
+     * @throws Exception input must be int between 0 and 8
+     * @throws Exception game already has a winner
      */
-    public function playerMoves(int $spot): bool{
+    public function playerMoves(int $spot){
+        if(!is_null($this->winner)){
+            throw new Exception('game already has a winner');
+        }
+        if(!is_int($spot) || ($spot < 0 || $spot > 8)){
+            throw new Exception('input must be int between 0 and 8');
+        }
         if($this->gameMatrix[$spot] != null){
            return false;
         }
         $this->gameMatrix[$spot] = $this->playersTurn;
-        $this->nextPlayer();
-        return true;
+        $win = $this->checkWinner();
+        if($win === false){
+            $this->nextPlayer();
+        } else{
+            $this->winner = $this->playersTurn;
+        }
+        $this->nturns++;
+        return $win;
+    }
+
+    public function cpuMoves(){
+        if(!$this->isCpuTurn()){
+            return false;
+        }
+        $spot = $this->getCPUMove();
+        $this->gameMatrix[$spot] = $this->playersTurn;
+        $win = $this->checkWinner();
+        if($win === false){
+            $this->nextPlayer();
+        }
+        return $win;
     }
 
     /**
      * switches to the next players turn
      */
-    public function nextPlayer(){
+    private function nextPlayer(){
         if($this->playersTurn == 'x'){
             if($this->gameType == 'single'){
                 $this->cpuTurn = true;
@@ -161,17 +211,7 @@ class tictactoe
         }
     }
 
-    public function cpuMoves(): bool{
-        if(!$this->isCpuTurn()){
-            return false;
-        }
-        $spot = $this->getCPUMove();
-        $this->gameMatrix[$spot] = $this->playersTurn;
-        $this->nextPlayer();
-        return true;
-    }
-
-    public function getCPUMove(){
+    private function getCPUMove(){
         foreach ($this->winningPlays as $play){
             foreach ($play as $square){
                 if(is_null($this->gameMatrix[$square])){
@@ -182,7 +222,7 @@ class tictactoe
         return false;
     }
 
-    public function checkWinner(){
+    private function checkWinner(){
         $check = $this->playersTurn;
         $playerSpots = array_keys($this->gameMatrix, $check);
         foreach ($this->winningPlays as $win){
@@ -190,11 +230,13 @@ class tictactoe
                 return $win;
             }
         }
+        if($this->nturns == 9){
+            return array(0,0,0);
+        }
         return false;
     }
 
-
-    public static function isValidType($gametype): bool {
+    private function isValidType($gametype): bool {
         return $gametype == 'single' || $gametype == 'multi' || $gametype == 'online';
     }
 }
