@@ -4,7 +4,9 @@
 </head>
 <h2 class="header" id="player-title">{{#cpuTurn}}CPU Moves{{/cpuTurn}}
     {{^cpuTurn}}Player {{turn}} moves{{/cpuTurn}}</h2>
+    <div hidden id="game-type">{{gameType}}</div>
     <div hidden id="player-turn">{{turn}}</div>
+    <div hidden id="game-over">false</div>
     <div class="play-area">
         {{#array}}
         <div id="block_{{spot}}" class="block">
@@ -17,7 +19,9 @@
         </div>
         {{/array}}
     </div>
-
+<div class="d-grid col-2 mx-auto">
+    <button id='btn_replay' type="button" class="btn btn-primary btn-lg" style="margin-bottom: 1rem" hidden>Replay</button>
+</div>
 <!-- Modal -->
 <div class="modal fade" id="info-popup" tabindex="-1" aria-labelledby="info-popup-label" aria-hidden="true">
     <div class="modal-dialog-centered">

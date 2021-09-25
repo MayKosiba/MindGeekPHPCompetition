@@ -158,11 +158,10 @@ class tictactoe
      * @param int $spot must be from 0-8 to assign a player to that spot
      * @return false|int[]|mixed false if no win condition, array with 3 elements for win condition
      * @throws Exception input must be int between 0 and 8
-     * @throws Exception game already has a winner
      */
     public function playerMoves(int $spot){
         if(!is_null($this->winner)){
-            throw new Exception('game already has a winner');
+            return $this->checkWinner();
         }
         if(!is_int($spot) || ($spot < 0 || $spot > 8)){
             throw new Exception('input must be int between 0 and 8');

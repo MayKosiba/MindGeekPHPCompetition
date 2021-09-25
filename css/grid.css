@@ -1,6 +1,7 @@
 .play-area {
     margin: auto;
-    padding: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     display: grid;
     width: 300px;
     grid-template-columns: auto auto auto;
