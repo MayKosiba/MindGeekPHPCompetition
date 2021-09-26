@@ -54,6 +54,9 @@ class tictactoe
      */
     private ?string $winner = null;
 
+    /** array with all available winning combinations
+     * @var array|int[][]
+     */
     private array $winningPlays = array(
         array(0,3,6),
         array(0,1,2),
@@ -64,6 +67,7 @@ class tictactoe
         array(1,4,7),
         array(2,4,6)
     );
+
     /**
      * @param String $game must be 'single' or 'multi' for local player and 'online' for internet play
      * @throws Exception Invalid Game Type
@@ -87,6 +91,9 @@ class tictactoe
         }
     }
 
+    /** returns a html rendered game screen with all the needed data to start playing a game
+     * @return string
+     */
     public function renderGameScreen(): string {
         try {
             $context = array();
@@ -149,10 +156,6 @@ class tictactoe
         return $this->cpuTurn;
     }
 
-
-
-
-
     /**
      * make player move
      * @param int $spot must be from 0-8 to assign a player to that spot
@@ -174,6 +177,9 @@ class tictactoe
         if($win === false){
             $this->nextPlayer();
         } else{
+            if($win == array(0,0,0)){
+                $this->winner = 'tie';
+            }
             $this->winner = $this->playersTurn;
         }
         $this->nturns++;
@@ -210,7 +216,22 @@ class tictactoe
         }
     }
 
+    /**
+     * picks spot for cpu
+     * @return false|int|mixed
+     */
     private function getCPUMove(){
+        //picks the best available play.
+        foreach ($this->winningPlays as $play){
+            if(!in_array('x',$play)){
+                foreach ($play as $square){
+                    if(is_null($this->gameMatrix[$square])){
+                        return $square;
+                    }
+                }
+            }
+        }
+        //if no winning plays are available play defense until game ties.
         foreach ($this->winningPlays as $play){
             foreach ($play as $square){
                 if(is_null($this->gameMatrix[$square])){
@@ -221,6 +242,9 @@ class tictactoe
         return false;
     }
 
+    /** Checks if there is a winner yet.
+     * @return false|int[]|mixed false is no winner, 1x3 array if win or tie
+     */
     private function checkWinner(){
         $check = $this->playersTurn;
         $playerSpots = array_keys($this->gameMatrix, $check);
@@ -229,12 +253,16 @@ class tictactoe
                 return $win;
             }
         }
-        if($this->nturns == 9){
+        if($this->nturns >= 8){
             return array(0,0,0);
         }
         return false;
     }
 
+    /** Makes sure the game type is valid when initiating a game instance.
+     * @param $gametype 'single', 'multi' or 'online'
+     * @return bool
+     */
     private function isValidType($gametype): bool {
         return $gametype == 'single' || $gametype == 'multi' || $gametype == 'online';
     }
