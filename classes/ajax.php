@@ -18,10 +18,19 @@ if($functionCall == 'startGame'){
 
 if($functionCall == 'playerMoves'){
     try {
-        $return = $game->playerMoves($_POST['spot']);
-        echo json_encode($return);
+        $player = $game->playerMoves($_POST['spot']);
+        if(!$player['win']){
+            if($game->isCpuTurn()){
+                $cpu = $game->playerMoves($game->getCPUMove());
+            }
+        }
+        if(isset($cpu)) {
+            echo json_encode(array($player, $cpu));
+        } else {
+            echo json_encode(array($player));
+        }
     } catch (Exception $e) {
-        echo $e->getMessage();
+        echo json_encode($e->getMessage());
     }
 }
 $_SESSION['game'] = serialize($game);

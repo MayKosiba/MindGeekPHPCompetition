@@ -86,6 +86,7 @@ class tictactoe
         }
         if($game == 'single' && $this->playersTurn == 'o'){
             $this->cpuTurn = true;
+            $this->playerMoves($this->getCPUMove());
         } else {
             $this->cpuTurn = false;
         }
@@ -163,17 +164,28 @@ class tictactoe
      * @throws Exception input must be int between 0 and 8
      */
     public function playerMoves(int $spot){
-        if(!is_null($this->winner)){
+        if(!is_null($this->winner))
             return $this->checkWinner();
-        }
-        if(!is_int($spot) || ($spot < 0 || $spot > 8)){
+
+        if(!is_int($spot) || ($spot < 0 || $spot > 8))
             throw new Exception('input must be int between 0 and 8');
-        }
-        if($this->gameMatrix[$spot] != null){
-           return false;
-        }
+
+        if($this->gameMatrix[$spot] != null)
+            return false;
+
         $this->gameMatrix[$spot] = $this->playersTurn;
         $win = $this->checkWinner();
+
+        $player = 'player';
+        if($this->isCpuTurn())
+            $player = 'cpu';
+
+        $gameStats = array(
+            'win' => $win,
+            'playerMove' => $spot,
+            'player' => $player
+        );
+
         if($win === false){
             $this->nextPlayer();
         } else{
@@ -183,20 +195,8 @@ class tictactoe
             $this->winner = $this->playersTurn;
         }
         $this->nturns++;
-        return $win;
-    }
 
-    public function cpuMoves(){
-        if(!$this->isCpuTurn()){
-            return false;
-        }
-        $spot = $this->getCPUMove();
-        $this->gameMatrix[$spot] = $this->playersTurn;
-        $win = $this->checkWinner();
-        if($win === false){
-            $this->nextPlayer();
-        }
-        return $win;
+        return $gameStats;
     }
 
     /**
@@ -204,14 +204,12 @@ class tictactoe
      */
     private function nextPlayer(){
         if($this->playersTurn == 'x'){
-            if($this->gameType == 'single'){
+            if($this->gameType == 'single')
                 $this->cpuTurn = true;
-            }
             $this->playersTurn = 'o';
         } else {
-            if($this->gameType == 'single'){
+            if($this->gameType == 'single')
                 $this->cpuTurn = false;
-            }
             $this->playersTurn = 'x';
         }
     }
@@ -220,10 +218,10 @@ class tictactoe
      * picks spot for cpu
      * @return false|int|mixed
      */
-    private function getCPUMove(){
+    public function getCPUMove(){
         //picks the best available play.
         foreach ($this->winningPlays as $play){
-            if(!in_array('x',$play)){
+            if(!($this->gameMatrix[$play[0]] == 'x' || $this->gameMatrix[$play[1]] == 'x' || $this->gameMatrix[$play[2]] == 'x')){
                 foreach ($play as $square){
                     if(is_null($this->gameMatrix[$square])){
                         return $square;
