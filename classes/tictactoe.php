@@ -229,7 +229,7 @@ class tictactoe
     public function getCPUMove(){
         //picks the best available play.
         foreach ($this->winningPlays as $play){
-            if(!($this->gameMatrix[$play[0]] == 'x' || $this->gameMatrix[$play[1]] == 'x' || $this->gameMatrix[$play[2]] == 'x')){
+            if($this->gameMatrix[$play[0]] != 'x' && $this->gameMatrix[$play[1]] != 'x' && $this->gameMatrix[$play[2]] != 'x'){
                 foreach ($play as $square){
                     if(is_null($this->gameMatrix[$square])){
                         return $square;
@@ -251,7 +251,7 @@ class tictactoe
     /** Checks if there is a winner yet.
      * @return false|int[]|mixed false is no winner, 1x3 array if win or tie
      */
-    private function checkWinner(){
+    public function checkWinner(){
         $check = $this->playersTurn;
         $playerSpots = array_keys($this->gameMatrix, $check);
         foreach ($this->winningPlays as $win){

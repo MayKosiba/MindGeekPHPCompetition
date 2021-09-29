@@ -22,7 +22,6 @@ function attachEventListeners() {
             data: {spot: spot, functionCall: "playerMoves"},
             success: function(result){
                 let data = JSON.parse(result);
-                console.log(data);
                 if(data != false) {
                     data.forEach(e => animate(e));
                 }
