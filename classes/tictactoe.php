@@ -1,4 +1,11 @@
 <?php
+/**
+ * *************************************************************************
+ * *                           TIC TAC TOE                                **
+ * *************************************************************************
+ * @author      May Kosiba                                                **
+ * *************************************************************************
+ * ************************************************************************ */
 
 require '../vendor/mustache/mustache/src/Mustache/Autoloader.php';
 
@@ -76,7 +83,7 @@ class tictactoe
         if($this->isValidType($game)) {
             $this->gameType = $game;
         } else {
-            throw new Exception('Invalid Game Type');
+            throw new InvalidArgumentException("Game type must be single, multi or online was: " . $game);
         }
         $player = rand(0,1);
         if($player == 1){
@@ -160,15 +167,15 @@ class tictactoe
     /**
      * make player move
      * @param int $spot must be from 0-8 to assign a player to that spot
-     * @return false|int[]|mixed false if no win condition, array with 3 elements for win condition
+     * @return array|false|int[]|mixed false if move cannot be played, array with game states
      * @throws Exception input must be int between 0 and 8
      */
     public function playerMoves(int $spot){
         if(!is_null($this->winner))
-            return $this->checkWinner();
+            return false;
 
         if(!is_int($spot) || ($spot < 0 || $spot > 8))
-            throw new Exception('input must be int between 0 and 8');
+            throw new InvalidArgumentException('input must be int between 0 and 8 was: ' . $spot);
 
         if($this->gameMatrix[$spot] != null)
             return false;
@@ -191,8 +198,9 @@ class tictactoe
         } else{
             if($win == array(0,0,0)){
                 $this->winner = 'tie';
+            } else {
+                $this->winner = $this->playersTurn;
             }
-            $this->winner = $this->playersTurn;
         }
         $this->nturns++;
 
