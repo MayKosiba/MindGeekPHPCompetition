@@ -9,6 +9,10 @@ var checkExist = setInterval(function() {
     }
 }, 100);
 
+
+/**
+ * attaches button on click to elements on page load
+ */
 function attachEventListeners() {
     $('.block').click(function (){
         let lock = document.getElementById('lock').innerText;
@@ -16,38 +20,45 @@ function attachEventListeners() {
         let spot = this.id.slice(-1);
         let gameOver = document.getElementById('game-over');
         if(gameOver.innerText == 'true') return;
-        $.ajax({url: "classes/ajax.php",
+        $.ajax({
+            url: "classes/ajax.php",
             type: "post",
             dataType: 'html',
-            data: {spot: spot, functionCall: "playerMoves"},
-            success: function(result){
-                let data = JSON.parse(result);
-                if(data != false) {
-                    data.forEach(e => animate(e));
-                }
-            },
-            error: function (request, status, error) {
-                //placeholder
+            data: {spot: spot, functionCall: "playerMoves"}
+        })
+        .done(function(result){
+            let data = JSON.parse(result);
+            if(data != false) {
+                data.forEach(e => animate(e));
             }
+        })
+        .fail(function (response) {
+            //placeholder
         });
     });
 
     $('#btn_replay').click(function() {
         let gameType = document.getElementById('game-type').innerText;
-        $.ajax({url: "classes/ajax.php",
+        $.ajax({
+            url: "classes/ajax.php",
             type: "post",
             dataType: 'html',
-            data: {gametype: gameType, functionCall: "startGame"},
-            success: function(result){
-                $("#game-window").html(result);
-            },
-            error: function (request, status, error) {
-                //placeholder
-            }});
+            data: {gametype: gameType, functionCall: "startGame"}
+        })
+        .done(function(result){
+            $("#game-window").html(result);
+        })
+        .fail(function (response) {
+            //placeholder
+        });
     });
 
 };
 
+/**
+ * if the cpu made a turn it animates the "cpu is moving..." text
+ * @param turn
+ */
 function animate(turn){
     if(turn.player == 'cpu'){
         lockScreen();
@@ -70,6 +81,10 @@ function animate(turn){
 
 }
 
+/**
+ * Adds an X or O to the tile for a turn and changes to next player
+ * @param turn
+ */
 function makeTurn(turn){
     let player = document.getElementById('player-turn');
     let tile = document.getElementById('block_' + turn.playerMove);
