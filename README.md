@@ -19,6 +19,7 @@ git clone https://github.com/MayKosiba/TicTacToe.git
 ```
 
 Cd into the project and you'll find a docker-compose.yml file
+
 Assuming you have docker installed run: 
 
 ```
