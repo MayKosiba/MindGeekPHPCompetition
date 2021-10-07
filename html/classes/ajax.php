@@ -1,12 +1,5 @@
 <?php
 /**
- * *************************************************************************
- * *                           TIC TAC TOE                                **
- * *************************************************************************
- * @author      May Kosiba                                                **
- * *************************************************************************
- * ************************************************************************ */
-/**
  * This file handles all the ajax calls the client would make *
  */
 require 'tictactoe.php';
@@ -28,8 +21,10 @@ if($functionCall == 'startGame'){
     }
 
     echo $game->renderGameScreen();
+
 } elseif (isset($_SESSION['game'])){
     $game = unserialize($_SESSION['game']);
+
 } else {
     die('must start a new game first');
 }
@@ -51,10 +46,10 @@ if($functionCall == 'playerMoves'){
         die($e->getMessage());
     }
 
-    if(isset($cpu)) {
-        echo json_encode(array($player, $cpu));
-    } else {
-        echo json_encode(array($player));
-    }
+    $data = array($player);
+    if(isset($cpu)) $data[] = $cpu;
+
+    echo json_encode($data);
+
 }
 $_SESSION['game'] = serialize($game);
