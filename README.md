@@ -26,7 +26,7 @@ Assuming you have docker installed run:
 docker-compose up -d
 ```
 
-Once docker has pulled all the required images you'll find the webpage at:**Localhost:8080**
+Once docker has pulled all the required images you'll find the webpage at: **Localhost:8080**
 
 You can configure the ports inside the docker-compose.yml file if needed
 
