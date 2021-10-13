@@ -1,6 +1,6 @@
 #game-header{
     background-color: rgb(29, 155, 240);
-    height: 15%;
+    height: 3rem;
     border-radius: 25px 25px 0px 0px;
     padding-left: 25px;
     padding-right: 25px;
@@ -27,9 +27,11 @@ body{
 
 #game-container{
     margin: auto;
-    height: 60vh;
+    height: 80vh;
     width: 50vw;
-    margin-top: 5%;
+    margin-top: 10vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .contact-card{

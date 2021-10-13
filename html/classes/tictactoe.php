@@ -227,9 +227,12 @@ class tictactoe
      * @return false|int|mixed
      */
     public function getCPUMove(){
+        $options = $this->winningPlays;
+        shuffle($options);
         //picks the best available play.
-        foreach ($this->winningPlays as $play){
-            if($this->gameMatrix[$play[0]] != 'x' && $this->gameMatrix[$play[1]] != 'x' && $this->gameMatrix[$play[2]] != 'x'){
+        foreach ($options as $play){
+            if(($this->gameMatrix[$play[0]] != 'x' && $this->gameMatrix[$play[1]] != 'x' && $this->gameMatrix[$play[2]] != 'x') &&
+                ($this->gameMatrix[$play[0]] == 'o' || $this->gameMatrix[$play[1]] == 'o' || $this->gameMatrix[$play[2]] == 'o')){
                 foreach ($play as $square){
                     if(is_null($this->gameMatrix[$square])){
                         return $square;
@@ -238,7 +241,7 @@ class tictactoe
             }
         }
         //if no winning plays are available play defense until game ties.
-        foreach ($this->winningPlays as $play){
+        foreach ($options as $play){
             foreach ($play as $square){
                 if(is_null($this->gameMatrix[$square])){
                     return $square;
