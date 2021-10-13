@@ -11,7 +11,6 @@ require '../vendor/mustache/mustache/src/Mustache/Autoloader.php';
 
 class tictactoe
 {
-
     /**
      *  0-8 matrix representing the tic tac toe game
      * @var array $gameMatrix
@@ -79,7 +78,7 @@ class tictactoe
      * @param String $game must be 'single' or 'multi' for local player and 'online' for internet play
      * @throws Exception Invalid Game Type
      */
-    function __construct(string $game){
+    function __construct(string $game) {
         if($this->isValidType($game)) {
             $this->gameType = $game;
         } else {
@@ -159,18 +158,17 @@ class tictactoe
     /**
      * @return bool
      */
-    public function isCpuTurn(): bool
-    {
+    public function isCpuTurn(): bool {
         return $this->cpuTurn;
     }
 
     /**
      * make player move
      * @param int $spot must be from 0-8 to assign a player to that spot
-     * @return array|false|int[]|mixed false if move cannot be played, array with game states
+     * @return array|false false if move cannot be played, array with game states
      * @throws Exception input must be int between 0 and 8
      */
-    public function playerMoves(int $spot){
+    public function playerMoves(int $spot) {
         if(!is_null($this->winner))
             return false;
 
@@ -210,7 +208,7 @@ class tictactoe
     /**
      * switches to the next players turn
      */
-    private function nextPlayer(){
+    private function nextPlayer() {
         if($this->playersTurn == 'x'){
             if($this->gameType == 'single')
                 $this->cpuTurn = true;
@@ -224,15 +222,14 @@ class tictactoe
 
     /**
      * picks spot for cpu
-     * @return false|int|mixed
+     * @return false|int
      */
-    public function getCPUMove(){
+    public function getCPUMove() {
         $options = $this->winningPlays;
         shuffle($options);
         //picks the best available play.
         foreach ($options as $play){
-            if(($this->gameMatrix[$play[0]] != 'x' && $this->gameMatrix[$play[1]] != 'x' && $this->gameMatrix[$play[2]] != 'x') &&
-                ($this->gameMatrix[$play[0]] == 'o' || $this->gameMatrix[$play[1]] == 'o' || $this->gameMatrix[$play[2]] == 'o')){
+            if(!$this->isSpotOccupied('x', $play) && $this->isSpotOccupied('o', $play)){
                 foreach ($play as $square){
                     if(is_null($this->gameMatrix[$square])){
                         return $square;
@@ -252,9 +249,9 @@ class tictactoe
     }
 
     /** Checks if there is a winner yet.
-     * @return false|int[]|mixed false is no winner, 1x3 array if win or tie
+     * @return false|int[] false is no winner, 1x3 array if win or tie
      */
-    public function checkWinner(){
+    public function checkWinner() {
         $check = $this->playersTurn;
         $playerSpots = array_keys($this->gameMatrix, $check);
         foreach ($this->winningPlays as $win){
@@ -274,5 +271,22 @@ class tictactoe
      */
     private function isValidType($gametype): bool {
         return $gametype == 'single' || $gametype == 'multi' || $gametype == 'online';
+    }
+
+    /**Checks all spots in the given array if any are occupied by a value
+     * @param $needle string
+     * @param $spots array spots in game matrix to check
+     * @return bool
+     */
+    private function isSpotOccupied(string $needle, array $spots): bool {
+        foreach ($spots as $spot){
+            if($spot < 0 || $spot > count($this->gameMatrix)){
+                throw new OutOfBoundsException('$spot is outside of bounds of game matrix array');
+            }
+            if($this->gameMatrix[$spot] == $needle){
+                return true;
+            }
+        }
+        return false;
     }
 }
